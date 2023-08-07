@@ -9,35 +9,6 @@ class Category(models.Model):
         return self.name
 
 
-class UserFollowing(models.Model):
-    user_id = models.ForeignKey(
-        "user.User",
-        related_name="following",
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-    )
-    following_user_id = models.ForeignKey(
-        "user.User",
-        related_name="followers",
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-    )
-    created = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-        constraints = [
-            models.UniqueConstraint(
-                fields=["user_id", "following_user_id"], name="unique_following"
-            )
-        ]
-        ordering = ["-created"]
-
-    def __str__(self):
-        return f"{self.user_id} is following {self.following_user_id}"
-
-
 class Post(models.Model):
     title = models.CharField(max_length=150, blank=True)
     content = models.TextField()

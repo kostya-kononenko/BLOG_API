@@ -2,8 +2,11 @@ from django.contrib.auth import get_user_model, authenticate
 from rest_framework import serializers
 from django.utils.translation import gettext as _
 
+from user.models import UserFollowing
+
 
 class UserSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = get_user_model()
         fields = (
@@ -22,20 +25,67 @@ class UserSerializer(serializers.ModelSerializer):
         read_only_fields = ("id", "is_stuff")
         extra_kwargs = {"password": {"write_only": True, "min_length": 5}}
 
-        @staticmethod
-        def create(self, validated_data):
-            return get_user_model().objects.create_user(**validated_data)
+    def create(self, validated_data):
+        return get_user_model().objects.create_user(**validated_data)
 
-        @staticmethod
-        def update(self, instance, validated_data):
-            password = validated_data.pop("password", None)
-            user = super().update(instance, validated_data)
+    def update(self, instance, validated_data):
+        password = validated_data.pop("password", None)
+        user = super().update(instance, validated_data)
 
-            if password:
-                user.set_password(password)
-                user.save()
+        if password:
+            user.set_password(password)
+            user.save()
 
-            return user
+        return user
+
+
+class UserDetailSerializer(UserSerializer):
+    following = serializers.SerializerMethodField()
+    followers = serializers.SerializerMethodField()
+
+    class Meta:
+        model = get_user_model()
+        fields = (
+            "id",
+            "email",
+            "password",
+            "first_name",
+            "last_name",
+            "avatar",
+            "bio",
+            "date_of_birth",
+            "facebook_url",
+            "twitter_url",
+            "instagram_url",
+            "following",
+            "followers",
+        )
+
+
+    def get_following(self, obj):
+        return FollowingSerializer(obj.following.all(), many=True).data
+
+    def get_followers(self, obj):
+        return FollowersSerializer(obj.followers.all(), many=True).data
+
+
+class FollowingSerializer(serializers.ModelSerializer):
+    id = serializers.ReadOnlyField(source='following_user_id.id')
+    first_name = serializers.ReadOnlyField(source='following_user_id.first_name')
+    last_name = serializers.ReadOnlyField(source='following_user_id.last_name')
+
+    class Meta:
+        model = UserFollowing
+        fields = ("id", "first_name", "last_name")
+
+
+class FollowersSerializer(serializers.ModelSerializer):
+    first_name = serializers.ReadOnlyField(source="user_id.first_name")
+    last_name = serializers.ReadOnlyField(source="user_id.last_name")
+
+    class Meta:
+        model = UserFollowing
+        fields = ("user_id", "first_name", "last_name")
 
 
 class AuthTokenSerializer(serializers.Serializer):
