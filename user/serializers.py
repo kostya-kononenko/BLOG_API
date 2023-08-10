@@ -6,7 +6,6 @@ from user.models import UserFollowing
 
 
 class UserSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = get_user_model()
         fields = (
@@ -61,25 +60,24 @@ class UserDetailSerializer(UserSerializer):
             "followers",
         )
 
-
     def get_following(self, obj):
-        return FollowingSerializer(obj.following.all(), many=True).data
+        return UserFollowingSerializer(obj.following.all(), many=True).data
 
     def get_followers(self, obj):
-        return FollowersSerializer(obj.followers.all(), many=True).data
+        return UserFollowersSerializer(obj.followers.all(), many=True).data
 
 
-class FollowingSerializer(serializers.ModelSerializer):
-    id = serializers.ReadOnlyField(source='following_user_id.id')
-    first_name = serializers.ReadOnlyField(source='following_user_id.first_name')
-    last_name = serializers.ReadOnlyField(source='following_user_id.last_name')
+class UserFollowingSerializer(serializers.ModelSerializer):
+    id = serializers.ReadOnlyField(source="following_user_id.id")
+    first_name = serializers.ReadOnlyField(source="following_user_id.first_name")
+    last_name = serializers.ReadOnlyField(source="following_user_id.last_name")
 
     class Meta:
         model = UserFollowing
         fields = ("id", "first_name", "last_name")
 
 
-class FollowersSerializer(serializers.ModelSerializer):
+class UserFollowersSerializer(serializers.ModelSerializer):
     first_name = serializers.ReadOnlyField(source="user_id.first_name")
     last_name = serializers.ReadOnlyField(source="user_id.last_name")
 
