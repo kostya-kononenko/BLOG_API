@@ -61,6 +61,14 @@ class CommentDetailSerializer(serializers.ModelSerializer):
         )
 
 
+class CommentImageSerializer(serializers.ModelSerializer):
+    image = serializers.ImageField(read_only=False)
+
+    class Meta:
+        model = Comment
+        fields = ("id", "image")
+
+
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
@@ -101,6 +109,14 @@ class PostSerializer(serializers.ModelSerializer):
             "likes_count",
             "category_count",
         )
+
+
+class PostImageSerializer(serializers.ModelSerializer):
+    image = serializers.ImageField(read_only=False)
+
+    class Meta:
+        model = Post
+        fields = ("id", "image")
 
 
 class PostCreateSerializer(serializers.ModelSerializer):
