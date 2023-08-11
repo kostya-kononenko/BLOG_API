@@ -1,4 +1,5 @@
 from rest_framework import serializers
+
 from .models import Post, Comment, Like, Category
 
 
@@ -29,17 +30,6 @@ class LikeDetailSerializer(serializers.ModelSerializer):
             "id",
             "first_name",
             "last_name"
-        )
-
-
-class LikeListSerializer(serializers.ModelSerializer):
-    post = serializers.CharField(source="post.title", read_only=True)
-
-    class Meta:
-        model = Like
-        fields = (
-            "id",
-            "post",
         )
 
 
@@ -114,6 +104,8 @@ class PostSerializer(serializers.ModelSerializer):
 
 
 class PostCreateSerializer(serializers.ModelSerializer):
+    category = CategorySerializer(many=True, read_only=True)
+
     class Meta:
         model = Post
         fields = (
@@ -130,8 +122,7 @@ class PostDetailSerializer(serializers.ModelSerializer):
     last_name = serializers.ReadOnlyField(source='author.last_name')
     likes = LikeDetailSerializer(many=True, read_only=True)
     comments = CommentDetailSerializer(many=True, read_only=True)
-    category = CategorySerializer(many=True)
-    # category = serializers.StringRelatedField(many=True)
+    category = serializers.StringRelatedField(many=True)
 
     class Meta:
         model = Post

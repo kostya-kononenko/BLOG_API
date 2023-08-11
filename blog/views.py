@@ -11,11 +11,13 @@ from blog.serializers import (
     PostSerializer,
     CommentSerializer,
     CategorySerializer,
-    LikeSerializer, PostDetailSerializer, PostCreateSerializer, CommentDetailSerializer
+    LikeSerializer,
+    PostDetailSerializer,
+    PostCreateSerializer,
 )
 
 
-class PostViewSet(viewsets.ModelViewSet):    # TODO Сделать разбивку на все пости/пости за кем следишь
+class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.select_related("author")
     permission_classes = (IsOwnerOrReadOnly,)
 
@@ -81,5 +83,4 @@ class CommentViewSet(viewsets.ModelViewSet):
 class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
-    permission_classes = (IsOwnerOrReadOnly,)
 
