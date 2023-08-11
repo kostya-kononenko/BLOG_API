@@ -1,4 +1,6 @@
 from django.db.models import Q
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
@@ -13,7 +15,10 @@ from blog.serializers import (
     CategorySerializer,
     LikeSerializer,
     PostDetailSerializer,
-    PostCreateSerializer, CommentImageSerializer, PostImageSerializer,
+    PostCreateSerializer,
+    CommentImageSerializer,
+    PostImageSerializer,
+    CommentDetailSerializer,
 )
 
 
@@ -72,10 +77,12 @@ class PostViewSet(viewsets.ModelViewSet):
         response_serializer = PostDetailSerializer(post)
         return Response(response_serializer.data, status=status.HTTP_200_OK)
 
-    @action(detail=True,
-            methods=["POST"],
-            url_path="upload_image",
-            permission_classes=(IsOwnerOrReadOnly,))
+    @action(
+        detail=True,
+        methods=["POST"],
+        url_path="upload_image",
+        permission_classes=(IsOwnerOrReadOnly,),
+    )
     def upload_image(self, request, pk=None):
         post = self.get_object()
         serializer = self.get_serializer(post, data=request.data)
@@ -85,6 +92,20 @@ class PostViewSet(viewsets.ModelViewSet):
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(
+                "title",
+                type=OpenApiTypes.STR,
+                description="Filter by title (ex. ?title=news)",
+            ),
+            OpenApiParameter(
+                "hashtag",
+                type=OpenApiTypes.STR,
+                description="Filter by hashtag (ex. ?hashtag=kostya@gmail.com)",
+            ),
+        ]
+    )
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
 
@@ -95,14 +116,22 @@ class CommentViewSet(viewsets.ModelViewSet):
     permission_classes = (IsOwnerOrReadOnly,)
 
     def get_serializer_class(self):
+        if self.action == "create":
+            return CommentSerializer
         if self.action == "upload_image":
             return CommentImageSerializer
-        return CommentSerializer
+        return CommentDetailSerializer
 
-    @action(detail=True,
-            methods=["POST"],
-            url_path="upload_image",
-            permission_classes=(IsOwnerOrReadOnly, ))
+    def perform_create(self, serializer):
+        post = get_object_or_404(Post, pk=self.kwargs.get("post_id"))
+        serializer.save(user=self.request.user, post=post)
+
+    @action(
+        detail=True,
+        methods=["POST"],
+        url_path="upload_image",
+        permission_classes=(IsOwnerOrReadOnly,),
+    )
     def upload_image(self, request, pk=None):
         comment = self.get_object()
         serializer = self.get_serializer(comment, data=request.data)
@@ -116,4 +145,3 @@ class CommentViewSet(viewsets.ModelViewSet):
 class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
-

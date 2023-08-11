@@ -14,6 +14,7 @@ def blog_image_file_path(instance, filename):
 
     return os.path.join("uploads/blogs/", filename)
 
+
 class Category(models.Model):
     name = models.CharField(max_length=100)
 
@@ -25,7 +26,9 @@ class Post(models.Model):
     title = models.CharField(max_length=150, blank=True)
     content = models.TextField()
     post_image = models.ImageField(null=True, upload_to=blog_image_file_path)
-    author = models.ForeignKey('user.User', related_name='posts', on_delete=models.SET_NULL, null=True)
+    author = models.ForeignKey(
+        "user.User", related_name="posts", on_delete=models.SET_NULL, null=True
+    )
     is_hidden = models.BooleanField(default=False)
     is_edited = models.BooleanField(default=False)
     date_posted = models.DateTimeField(auto_now_add=True)
@@ -33,7 +36,7 @@ class Post(models.Model):
     hashtag = models.CharField(max_length=50, null=True, blank=True)
 
     class Meta:
-        ordering = ['-date_posted']
+        ordering = ["-date_posted"]
 
 
 class Like(models.Model):
@@ -47,6 +50,8 @@ class Like(models.Model):
 class Comment(models.Model):
     content = models.TextField()
     comment_image = models.ImageField(null=True, upload_to=blog_image_file_path)
-    author = models.ForeignKey('user.User', on_delete=models.SET_NULL, null=True)
+    author = models.ForeignKey("user.User", on_delete=models.SET_NULL, null=True)
     date_posted = models.DateTimeField(auto_now_add=True)
-    parent_post = models.ForeignKey('Post', on_delete=models.CASCADE,  related_name="comments")
+    parent_post = models.ForeignKey(
+        "Post", on_delete=models.CASCADE, related_name="comments"
+    )

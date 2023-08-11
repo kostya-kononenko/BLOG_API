@@ -11,7 +11,7 @@ from user.views import (
     UpdateUserView,
     DetailUserView,
     UserFollowingView,
-    UserFollow
+    UserFollow,
 )
 
 router = routers.DefaultRouter()
@@ -24,7 +24,7 @@ urlpatterns = [
     path("<int:pk>/", DetailUserView.as_view(), name="user-detail"),
     path("register/", CreateUserView.as_view(), name="user-register"),
     path("update/", UpdateUserView.as_view(), name="user-update"),
-    path('follow/<int:pk>/', UserFollow.as_view(), name='user-follow'),
+    path("follow/<int:pk>/", UserFollow.as_view(), name="user-follow"),
     path("token/", TokenObtainPairView.as_view(), name="token-obtain-pair"),
     path(
         "token/refresh/", TokenRefreshView.as_view(), name="token-refresh"

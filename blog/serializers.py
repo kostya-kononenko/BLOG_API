@@ -4,7 +4,6 @@ from .models import Post, Comment, Like, Category
 
 
 class LikeSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Like
         fields = (
@@ -14,41 +13,32 @@ class LikeSerializer(serializers.ModelSerializer):
         )
 
     def validate(self, data):
-        like = Like.objects.filter(post_id=data["post"], created_by_id=data["created_by"])
+        like = Like.objects.filter(
+            post_id=data["post"], created_by_id=data["created_by"]
+        )
         if like:
             raise serializers.ValidationError("You had already liked this post")
         return data
 
 
 class LikeDetailSerializer(serializers.ModelSerializer):
-    first_name = serializers.ReadOnlyField(source='created_by.first_name')
-    last_name = serializers.ReadOnlyField(source='created_by.last_name')
+    first_name = serializers.ReadOnlyField(source="created_by.first_name")
+    last_name = serializers.ReadOnlyField(source="created_by.last_name")
 
     class Meta:
         model = Like
-        fields = (
-            "id",
-            "first_name",
-            "last_name"
-        )
+        fields = ("id", "first_name", "last_name")
 
 
 class CommentSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Comment
-        fields = (
-            "id",
-            "content",
-            "comment_image",
-            "date_posted",
-            "parent_post"
-        )
+        fields = ("id", "content", "comment_image", "date_posted", "parent_post")
 
 
 class CommentDetailSerializer(serializers.ModelSerializer):
-    first_name = serializers.ReadOnlyField(source='author.first_name')
-    last_name = serializers.ReadOnlyField(source='author.last_name')
+    first_name = serializers.ReadOnlyField(source="author.first_name")
+    last_name = serializers.ReadOnlyField(source="author.last_name")
 
     class Meta:
         model = Comment
@@ -79,8 +69,8 @@ class CategorySerializer(serializers.ModelSerializer):
 
 
 class PostSerializer(serializers.ModelSerializer):
-    first_name = serializers.ReadOnlyField(source='author.first_name')
-    last_name = serializers.ReadOnlyField(source='author.last_name')
+    first_name = serializers.ReadOnlyField(source="author.first_name")
+    last_name = serializers.ReadOnlyField(source="author.last_name")
     comments_count = serializers.SerializerMethodField()
     likes_count = serializers.SerializerMethodField()
     category_count = serializers.SerializerMethodField()
@@ -124,18 +114,12 @@ class PostCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Post
-        fields = (
-            "title",
-            "content",
-            "post_image",
-            "category",
-            "hashtag"
-        )
+        fields = ("title", "content", "post_image", "category", "hashtag")
 
 
 class PostDetailSerializer(serializers.ModelSerializer):
-    first_name = serializers.ReadOnlyField(source='author.first_name')
-    last_name = serializers.ReadOnlyField(source='author.last_name')
+    first_name = serializers.ReadOnlyField(source="author.first_name")
+    last_name = serializers.ReadOnlyField(source="author.last_name")
     likes = LikeDetailSerializer(many=True, read_only=True)
     comments = CommentDetailSerializer(many=True, read_only=True)
     category = serializers.StringRelatedField(many=True)
