@@ -17,7 +17,8 @@ class LikeSerializer(serializers.ModelSerializer):
             post_id=data["post"], created_by_id=data["created_by"]
         )
         if like:
-            raise serializers.ValidationError("You had already liked this post")
+            raise serializers.ValidationError(
+                "You had already liked this post")
         return data
 
 
@@ -33,7 +34,12 @@ class LikeDetailSerializer(serializers.ModelSerializer):
 class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
-        fields = ("id", "content", "comment_image", "date_posted", "parent_post")
+        fields = (
+            "id",
+            "content",
+            "comment_image",
+            "date_posted",
+            "parent_post")
 
 
 class CommentDetailSerializer(serializers.ModelSerializer):

@@ -40,8 +40,11 @@ class Post(models.Model):
 
 
 class Like(models.Model):
-    created_by = models.ForeignKey("user.User", on_delete=models.CASCADE)
-    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name="likes")
+    created_by = models.ForeignKey("user.User",
+                                   on_delete=models.CASCADE)
+    post = models.ForeignKey(Post,
+                             on_delete=models.CASCADE,
+                             related_name="likes")
 
     def __str__(self):
         return "{0} liked by {1}".format(self.post, self.created_by)
@@ -49,8 +52,11 @@ class Like(models.Model):
 
 class Comment(models.Model):
     content = models.TextField()
-    comment_image = models.ImageField(null=True, upload_to=blog_image_file_path)
-    author = models.ForeignKey("user.User", on_delete=models.SET_NULL, null=True)
+    comment_image = models.ImageField(null=True,
+                                      upload_to=blog_image_file_path)
+    author = models.ForeignKey("user.User",
+                               on_delete=models.SET_NULL,
+                               null=True)
     date_posted = models.DateTimeField(auto_now_add=True)
     parent_post = models.ForeignKey(
         "Post", on_delete=models.CASCADE, related_name="comments"

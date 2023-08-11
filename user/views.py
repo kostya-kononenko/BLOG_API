@@ -60,19 +60,19 @@ class UserFollow(APIView):
         except User.DoesNotExist:
             raise Http404
 
-    def get(self, request, pk, format=None):
+    def get(self, request, pk):
         user = self.get_object(pk)
         serializer = UserSerializer(user)
         return Response(serializer.data)
 
-    def post(self, request, pk, format=None):
+    def post(self, request, pk):
         user = request.user
         follow = self.get_object(pk)
         UserFollowing.objects.create(user_id=user, following_user_id=follow)
         serializer = UserSerializer(follow)
         return Response(serializer.data)
 
-    def delete(self, request, pk, format=None):
+    def delete(self, request, pk):
         user = request.user
         follow = self.get_object(pk)
         connection = UserFollowing.objects.filter(

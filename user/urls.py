@@ -28,7 +28,7 @@ urlpatterns = [
     path("token/", TokenObtainPairView.as_view(), name="token-obtain-pair"),
     path(
         "token/refresh/", TokenRefreshView.as_view(), name="token-refresh"
-    ),  #  TODO use in all endpoint authentication_classes = (JWTAuthentication,)
+    ),
     path("token/verify/", TokenVerifyView.as_view(), name="token-verify"),
 ]
 app_name = "user"

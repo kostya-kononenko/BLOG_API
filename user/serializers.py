@@ -68,9 +68,12 @@ class UserDetailSerializer(UserSerializer):
 
 
 class UserFollowingSerializer(serializers.ModelSerializer):
-    id = serializers.ReadOnlyField(source="following_user_id.id")
-    first_name = serializers.ReadOnlyField(source="following_user_id.first_name")
-    last_name = serializers.ReadOnlyField(source="following_user_id.last_name")
+    id = serializers.ReadOnlyField(
+        source="following_user_id.id")
+    first_name = serializers.ReadOnlyField(
+        source="following_user_id.first_name")
+    last_name = serializers.ReadOnlyField(
+        source="following_user_id.last_name")
 
     class Meta:
         model = UserFollowing
@@ -102,13 +105,16 @@ class AuthTokenSerializer(serializers.Serializer):
             if user:
                 if not user.is_active:
                     msg = _("User account is disabled.")
-                    raise serializers.ValidationError(msg, code="authorization")
+                    raise serializers.ValidationError(
+                        msg, code="authorization")
             else:
                 msg = _("Unable to log in with provided credentials.")
-                raise serializers.ValidationError(msg, code="authorization")
+                raise serializers.ValidationError(
+                    msg, code="authorization")
         else:
             msg = _("Must include 'username' and 'password'.")
-            raise serializers.ValidationError(msg, code="authorization")
+            raise serializers.ValidationError(
+                msg, code="authorization")
 
         attrs["user"] = user
         return attrs

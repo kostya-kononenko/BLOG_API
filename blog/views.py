@@ -32,7 +32,8 @@ class PostViewSet(viewsets.ModelViewSet):
 
         queryset = self.queryset.filter(
             Q(author=self.request.user)
-            | Q(author__in=self.request.user.following.values("following_user_id"))
+            | Q(author__in=self.request.user.following.values(
+                "following_user_id"))
         )
         if title:
             queryset = queryset.filter(title__icontains=title)
@@ -60,7 +61,8 @@ class PostViewSet(viewsets.ModelViewSet):
     def like(self, request, pk):
         post = get_object_or_404(Post, id=pk)
         created_by = request.user
-        serializer = LikeSerializer(data={"post": post.id, "created_by": created_by.id})
+        serializer = LikeSerializer(data={"post": post.id,
+                                          "created_by": created_by.id})
         serializer.is_valid(raise_exception=True)
         serializer.save()
         response_serializer = PostDetailSerializer(post)
@@ -102,7 +104,8 @@ class PostViewSet(viewsets.ModelViewSet):
             OpenApiParameter(
                 "hashtag",
                 type=OpenApiTypes.STR,
-                description="Filter by hashtag (ex. ?hashtag=kostya@gmail.com)",
+                description="Filter by hashtag "
+                            "(ex. ?hashtag=kostya@gmail.com)",
             ),
         ]
     )
