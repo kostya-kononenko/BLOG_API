@@ -23,7 +23,6 @@ class CreateUserView(generics.CreateAPIView):
 
 class UpdateUserView(generics.RetrieveUpdateAPIView):
     serializer_class = UserSerializer
-    authentication_classes = (JWTAuthentication,)
     permission_classes = (IsAuthenticated,)
 
     def get_object(self):
@@ -38,8 +37,6 @@ class ListUserView(generics.ListAPIView):
 class DetailUserView(generics.RetrieveAPIView):
     serializer_class = UserDetailSerializer
     queryset = User.objects.all()
-
-    authentication_classes = (JWTAuthentication,)
     permission_classes = (IsAuthenticated,)
 
 
