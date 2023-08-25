@@ -12,7 +12,7 @@ def blog_image_file_path(instance, filename):
     _, extension = os.path.splitext(filename)
     filename = f"{slugify(instance)}-{uuid.uuid4()}{extension}"
 
-    return os.path.join("uploads/blogs/", filename)
+    return os.path.join("uploads", "blogs", filename)
 
 
 class Category(models.Model):
@@ -25,7 +25,7 @@ class Category(models.Model):
 class Post(models.Model):
     title = models.CharField(max_length=150, blank=True)
     content = models.TextField()
-    post_image = models.ImageField(null=True, upload_to=blog_image_file_path)
+    image = models.ImageField(null=True, upload_to=blog_image_file_path)
     author = models.ForeignKey(
         "user.User", related_name="posts", on_delete=models.SET_NULL, null=True
     )
@@ -52,12 +52,11 @@ class Like(models.Model):
 
 class Comment(models.Model):
     content = models.TextField()
-    comment_image = models.ImageField(null=True,
-                                      upload_to=blog_image_file_path)
+    image = models.ImageField(null=True, upload_to=blog_image_file_path)
     author = models.ForeignKey("user.User",
                                on_delete=models.SET_NULL,
                                null=True)
     date_posted = models.DateTimeField(auto_now_add=True)
-    parent_post = models.ForeignKey(
+    post = models.ForeignKey(
         "Post", on_delete=models.CASCADE, related_name="comments"
     )

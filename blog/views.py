@@ -72,7 +72,8 @@ class PostViewSet(viewsets.ModelViewSet):
     def unlike(self, request, pk):
         post = get_object_or_404(Post, id=pk)
         created_by = request.user
-        like = Like.objects.filter(post=post.id, created_by=created_by.id)
+        like = Like.objects.filter(post__id=post.id,
+                                   created_by__id=created_by.id)
         if not like:
             raise ValidationError("You hadn't liked this post yet")
         like.delete()
@@ -114,7 +115,7 @@ class PostViewSet(viewsets.ModelViewSet):
 
 
 class CommentViewSet(viewsets.ModelViewSet):
-    queryset = Comment.objects.select_related("author", "parent_post")
+    queryset = Comment.objects.select_related("author", "post")
     serializer_class = CommentSerializer
     permission_classes = (IsOwnerOrReadOnly,)
 

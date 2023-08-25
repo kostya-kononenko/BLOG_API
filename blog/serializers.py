@@ -37,9 +37,9 @@ class CommentSerializer(serializers.ModelSerializer):
         fields = (
             "id",
             "content",
-            "comment_image",
+            "image",
             "date_posted",
-            "parent_post")
+            "post")
 
 
 class CommentDetailSerializer(serializers.ModelSerializer):
@@ -96,7 +96,7 @@ class PostSerializer(serializers.ModelSerializer):
             "id",
             "title",
             "content",
-            "post_image",
+            "image",
             "first_name",
             "last_name",
             "date_posted",
@@ -120,7 +120,13 @@ class PostCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Post
-        fields = ("title", "content", "post_image", "category", "hashtag")
+        fields = (
+            "title",
+            "content",
+            "image",
+            "category",
+            "hashtag"
+        )
 
 
 class PostDetailSerializer(serializers.ModelSerializer):
@@ -138,7 +144,7 @@ class PostDetailSerializer(serializers.ModelSerializer):
             "last_name",
             "title",
             "content",
-            "post_image",
+            "image",
             "hashtag",
             "likes",
             "comments",

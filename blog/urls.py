@@ -9,12 +9,6 @@ router.register("comments", CommentViewSet)
 router.register("category", CategoryViewSet)
 
 
-urlpatterns = [
-    path("", include(router.urls)),
-    path("<int:pk>/like/",
-         PostViewSet.as_view({"post": "like"}), name="like"),
-    path("<int:pk>/unlike/",
-         PostViewSet.as_view({"post": "unlike"}), name="unlike"),
-]
+urlpatterns = router.urls
 
 app_name = "blog"
